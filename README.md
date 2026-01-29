@@ -23,7 +23,7 @@ Ensure you have the following installed:
 ### Installation
 1. Clone this repository:
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:jaresz/simple-the-egg.git
    ```
 2. Open the project in PlatformIO IDE.
 3. Connect your ESP32-C3 board to your computer.
