@@ -76,14 +76,14 @@ The AHT20 + BMP280 module is used for measuring temperature, humidity, and air p
 
 ### Wiring Instructions
 The AHT20 + BMP280 module shares the same I2C bus as the integrated OLED screen. The connections are as follows:
-<img src="images/bb.png" alt="Wiring: ESP32-C3 OLED development board and Sensor Module: AHT20 + BMP280" style="">
+<img src="images/bb.png" alt="Wiring: ESP32-C3 OLED development board and Sensor Module: AHT20 + BMP280" style="width: 744px; height: 660px;">
 | Module Pin | ESP32-C3 Pin |
 |------------|--------------|
 | VCC        | 3.3V         |
 | GND        | GND          |
 | SCL        | GPIO6        |
 | SDA        | GPIO5        |
-
+<img src="images/photo1.jpg" alt="" style="width: 744px; height: 744px;">
 - **SCL (Clock)**: Connect to GPIO6, which is also used by the OLED display.
 - **SDA (Data)**: Connect to GPIO5, which is also used by the OLED display.
 
