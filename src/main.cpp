@@ -46,6 +46,7 @@ bool lastButtonState = HIGH;
 bool buttonPressed = false;
 unsigned long buttonPressStartTime = 0;
 const unsigned long WIFI_RESET_DURATION = 3000; // Hold button for 3 seconds to reset WiFi
+#define DEFAULT_FONT u8g2_font_bytesize_tf
 
 // Generate random password avoiding ambiguous characters
 String generateRandomPassword() {
@@ -244,7 +245,8 @@ void setup(void)
      u8g2.setContrast(255); // set contrast to maximum 
      u8g2.setBusClock(400000); //400kHz I2C 
      //u8g2.setFont(u8g2_font_spleen8x16_mf);
-     u8g2.setFont(u8g2_font_scrum_tf);
+     //u8g2.setFont(u8g2_font_scrum_tf);
+     u8g2.setFont(DEFAULT_FONT);
      //u8g2.setFont(u8g2_font_ncenB10_tr);
      
      // Initialize BOOT button
@@ -275,7 +277,7 @@ void setup(void)
      // Display WiFi status
      u8g2.clearBuffer();
      u8g2.setCursor(0, 15);
-     u8g2.print("WiFi __");
+     u8g2.print("WiFi");
      u8g2.sendBuffer();
      
      // Check if no WiFi credentials are stored
@@ -489,7 +491,7 @@ void loop(void)
             u8g2.setFont(u8g2_font_cu12_tf);
             u8g2.setCursor(0, 30);
             u8g2.print(ap_password.c_str());
-            u8g2.setFont(u8g2_font_ncenB10_tr);
+            u8g2.setFont(DEFAULT_FONT);
         } else if (configDisplayMode == 2) {
             // Show IP address
             u8g2.setCursor(0, 15);
