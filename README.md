@@ -76,7 +76,7 @@ The AHT20 + BMP280 module is used for measuring temperature, humidity, and air p
 
 ### Wiring Instructions
 The AHT20 + BMP280 module shares the same I2C bus as the integrated OLED screen. The connections are as follows:
-<img src="images/bb.png" alt="Wiring: ESP32-C3 OLED development board and Sensor Module: AHT20 + BMP280" style="width: 744px; height: 660px;">
+<img src="images/bb.png" alt="Wiring: ESP32-C3 OLED development board and Sensor Module: AHT20 + BMP280" style="height: 330px;">
 | Module Pin | ESP32-C3 Pin |
 |------------|--------------|
 | VCC        | 3.3V         |
