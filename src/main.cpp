@@ -28,7 +28,7 @@ String ssid = "";
 String password = "";
 bool wifiConfigMode = false;
 const char* ap_ssid = "EggESP32";
-const char* ap_password = "93z45x62i";
+String ap_password = ""; // Will be generated randomly
 
 // Global sensor variables
 float currentTemperature = NAN;
@@ -46,6 +46,24 @@ bool lastButtonState = HIGH;
 bool buttonPressed = false;
 unsigned long buttonPressStartTime = 0;
 const unsigned long WIFI_RESET_DURATION = 3000; // Hold button for 3 seconds to reset WiFi
+
+// Generate random password avoiding ambiguous characters
+String generateRandomPassword() {
+    // Characters excluding ambiguous ones: 0, O, l, I, o
+    const char chars[] = "123456789abcdefghjkmnpqrstuvwxyz";
+    const int charCount = sizeof(chars) - 1; // -1 to exclude null terminator
+    
+    randomSeed(esp_random()); // Use ESP32 hardware random number generator
+    
+    int passwordLength = 8;
+    String password = "";
+    
+    for (int i = 0; i < passwordLength; i++) {
+        password += chars[random(0, charCount)];
+    }
+    
+    return password;
+}
 
 // WiFi Configuration Functions
 void loadWiFiConfig() {
@@ -108,7 +126,7 @@ void handleNotFound() {
 
 void startConfigPortal() {
     WiFi.mode(WIFI_AP);
-    WiFi.softAP(ap_ssid, ap_password);
+    WiFi.softAP(ap_ssid, ap_password.c_str());
     
     dnsServer.start(53, "*", WiFi.softAPIP());
     wifiConfigMode = true;
@@ -120,7 +138,7 @@ void startConfigPortal() {
     
     Serial.println("Configuration portal started");
     Serial.println("Connect to WiFi: " + String(ap_ssid));
-    Serial.println("Password: " + String(ap_password));
+    Serial.println("Password: " + ap_password);
     Serial.println("Go to: http://192.168.4.1");
 }
 
@@ -225,10 +243,16 @@ void setup(void)
      u8g2.begin();
      u8g2.setContrast(255); // set contrast to maximum 
      u8g2.setBusClock(400000); //400kHz I2C 
-     u8g2.setFont(u8g2_font_ncenB10_tr);
+     //u8g2.setFont(u8g2_font_spleen8x16_mf);
+     u8g2.setFont(u8g2_font_scrum_tf);
+     //u8g2.setFont(u8g2_font_ncenB10_tr);
      
      // Initialize BOOT button
      pinMode(BOOT_PIN, INPUT_PULLUP);
+     
+     // Generate random password for AP mode
+     ap_password = generateRandomPassword();
+     Serial.println("Generated AP password: " + ap_password);
      
      // Display startup message
      u8g2.clearBuffer();
@@ -251,7 +275,7 @@ void setup(void)
      // Display WiFi status
      u8g2.clearBuffer();
      u8g2.setCursor(0, 15);
-     u8g2.print("WiFi...");
+     u8g2.print("WiFi __");
      u8g2.sendBuffer();
      
      // Check if no WiFi credentials are stored
@@ -459,10 +483,13 @@ void loop(void)
             u8g2.print(ap_ssid);
         } else if (configDisplayMode == 1) {
             // Show WiFi password
+            u8g2.setFont(u8g2_font_ncenB08_tr);
             u8g2.setCursor(0, 12);
             u8g2.print("Password:");
+            u8g2.setFont(u8g2_font_cu12_tf);
             u8g2.setCursor(0, 30);
-            u8g2.print(ap_password);
+            u8g2.print(ap_password.c_str());
+            u8g2.setFont(u8g2_font_ncenB10_tr);
         } else if (configDisplayMode == 2) {
             // Show IP address
             u8g2.setCursor(0, 15);
@@ -471,9 +498,10 @@ void loop(void)
             u8g2.print("192.168.4.1");
         } else if (configDisplayMode == 3) {
             // Show Temperature
+            u8g2.setFont(u8g2_font_cu12_tf);
             char displayText[16];
             if (!isnan(temperature)) {
-                snprintf(displayText, sizeof(displayText), "%.1f'C", temperature);
+                snprintf(displayText, sizeof(displayText), "%.1f°°", temperature);
             } else {
                 strcpy(displayText, "Temp Error");
             }
@@ -510,7 +538,7 @@ void loop(void)
             u8g2.drawFrame(xOffset, yOffset, width, height); //draw a frame around the border
             char displayText[16];
             if (!isnan(dewPoint)) {
-                snprintf(displayText, sizeof(displayText), ": %.1f'C", dewPoint);
+                snprintf(displayText, sizeof(displayText), ": %.1f%°C", dewPoint);
             } else {
                 strcpy(displayText, "DP Error");
             }

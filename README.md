@@ -1,15 +1,23 @@
 # ESP32C3 OLED Project
 
 ## Overview
-This project is designed to display environmental parameter: temperature, humidity, and air pressure on a 0.42 inch OLED with a resolution of 72x40 pixels.
-It uses ESP32-C3 microcontroller with integrated, tiny 0.42 inch OLED 72x40 display and AHT20 + BMP280 sensor module.
-It is developed using PlatformIO and Arduino framework.
+This project is an IoT environmental monitoring device that displays temperature, humidity, air pressure, and dew point on a 0.42 inch OLED display with 72x40 pixel resolution. It features WiFi connectivity with automatic captive portal configuration and serves sensor data via a responsive web interface.
+
+The device uses ESP32-C3 microcontroller with integrated 0.42 inch OLED display and AHT20 + BMP280 sensor module, developed using PlatformIO and Arduino framework.
 
 ## Features
-- **ESP32 supermini** - ESP32-C3 OLED development board with integrated 0.42 inch OLED disaplay module,  WiFi, Bluetooth and ceramic antenna **
+- **ESP32 supermini** - ESP32-C3 OLED development board with integrated 0.42 inch OLED display module, WiFi, Bluetooth and ceramic antenna
+- **Environmental Monitoring**: Real-time measurement of temperature, humidity, air pressure, and dew point
+- **OLED Display**: Cycling display of sensor readings with IP address when connected to WiFi
+- **WiFi Connectivity**: Automatic captive portal setup for easy WiFi configuration
+- **Web Interface**: Responsive web server serving real-time sensor data with auto-refresh
+- **WiFi Management**: 
+  - Automatic config mode when no WiFi credentials are stored
+  - Manual WiFi reset via BOOT button (hold for 3+ seconds)
+  - Preserved settings during temporary connection failures
 - **Development Environment**: PlatformIO
 - **Language**: C++
-- **Applications**: IoT, data visualization
+- **Applications**: IoT, environmental monitoring, data visualization
 
 ## Getting Started
 
@@ -34,8 +42,22 @@ Ensure you have the following installed:
 
 ### File Structure
 - `platformio.ini`: Configuration file for PlatformIO.
-- `src/main.cpp`: Main application code.
+- `src/main.cpp`: Main application code with sensor reading, WiFi management, and web server.
 - `lib/`: Custom libraries.
+
+## Technical Details
+
+### Sensor Readings
+- **Temperature**: Measured by AHT20 sensor with BMP280 backup
+- **Humidity**: Measured by AHT20 sensor  
+- **Air Pressure**: Measured by BMP280 sensor (converted to hPa)
+- **Dew Point**: Calculated using temperature and humidity values
+
+### WiFi Configuration
+- **Access Point Name**: EggESP32
+- **Default Password**: 93z45x62i
+- **Configuration IP**: 192.168.4.1
+- **Settings Storage**: Non-volatile memory (Preferences library)
 
 
 ## Hardware Details
@@ -68,9 +90,38 @@ The AHT20 + BMP280 module shares the same I2C bus as the integrated OLED screen.
 The I2C bus allows multiple devices to communicate over the same data and clock lines. 
 
 ## Usage
+### First Time Setup
 1. Power on the ESP32-C3 board.
-2. The OLED display will show the output.
-3. Modify `src/main.cpp` to customize the behavior.
+2. If no WiFi credentials are stored, the device automatically enters configuration mode.
+3. Connect to the WiFi network "EggESP32" with password "93z45x62i".
+4. Open a web browser and navigate to `http://192.168.4.1`.
+5. Enter your WiFi network credentials and save.
+6. The device will restart and connect to your WiFi network.
+
+### Normal Operation
+1. The OLED display cycles through:
+   - Temperature (3 times with extended display time)
+   - Humidity
+   - Air Pressure  
+   - Dew Point (with frame border)
+   - IP Address (split across two lines)
+2. Access the web interface by navigating to the device's IP address in your browser.
+3. The web interface provides:
+   - Real-time sensor readings
+   - Automatic updates every 5 seconds
+   - Manual refresh capability
+   - Mobile-friendly responsive design
+
+### WiFi Reset
+- Hold the BOOT button for 3+ seconds to reset WiFi credentials
+- The device will display "WiFi Reset" and automatically restart in configuration mode
+
+### Configuration Mode Display
+When in configuration mode, the OLED alternates between:
+- WiFi network name (SSID)
+- WiFi password
+- Configuration IP address (192.168.4.1)
+- Live sensor readings (temperature, humidity, pressure, dew point)
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
